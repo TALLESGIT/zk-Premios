@@ -1,5 +1,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { collection, onSnapshot, addDoc, query } from "firebase/firestore";
+import { db } from '../lib/firebase';
 
 type Participante = {
   nome: string;
@@ -11,7 +13,7 @@ interface SorteioContextType {
   participantes: Participante[];
   numerosEscolhidos: number[];
   numerosDisponiveis: number[];
-  addParticipante: (participante: Participante) => void;
+  addParticipante: (participante: Participante) => Promise<void>;
   isNumeroDisponivel: (numero: number) => boolean;
   getParticipantePorNumero: (numero: number) => Participante | undefined;
   limparSelecao: () => void;
@@ -28,42 +30,34 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
   const [participantes, setParticipantes] = useState<Participante[]>([]);
   const [numerosEscolhidos, setNumerosEscolhidos] = useState<number[]>([]);
   const [jaFezCadastro, setJaFezCadastro] = useState<boolean>(false);
-  
-  // Inicializar dados do localStorage se existirem
+
   useEffect(() => {
-    const storedParticipantes = localStorage.getItem('sorteioParticipantes');
-    const storedNumeros = localStorage.getItem('sorteioNumeros');
-    const storedJaFezCadastro = localStorage.getItem('jaFezCadastro');
-    
-    if (storedParticipantes) {
-      setParticipantes(JSON.parse(storedParticipantes));
-    }
-    
-    if (storedNumeros) {
-      setNumerosEscolhidos(JSON.parse(storedNumeros));
-    }
-    
-    if (storedJaFezCadastro) {
-      setJaFezCadastro(JSON.parse(storedJaFezCadastro));
-    }
+    const q = query(collection(db, "participantes"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const participantesData: Participante[] = [];
+      const numerosData: number[] = [];
+      for (const doc of querySnapshot.docs) {
+        const data = doc.data() as Participante;
+        participantesData.push(data);
+        numerosData.push(data.numero);
+      }
+      setParticipantes(participantesData);
+      setNumerosEscolhidos(numerosData);
+    });
+
+    return () => unsubscribe();
   }, []);
-  
-  // Salvar mudanças no localStorage
-  useEffect(() => {
-    if (participantes.length > 0) {
-      localStorage.setItem('sorteioParticipantes', JSON.stringify(participantes));
-      localStorage.setItem('sorteioNumeros', JSON.stringify(numerosEscolhidos));
-    }
-    localStorage.setItem('jaFezCadastro', JSON.stringify(jaFezCadastro));
-  }, [participantes, numerosEscolhidos, jaFezCadastro]);
 
   const numerosDisponiveis = Array.from({ length: MAX_NUMERO }, (_, i) => i + 1)
     .filter(num => !numerosEscolhidos.includes(num));
 
-  const addParticipante = (participante: Participante) => {
-    setParticipantes(prev => [...prev, participante]);
-    setNumerosEscolhidos(prev => [...prev, participante.numero]);
-    setJaFezCadastro(true);
+  const addParticipante = async (participante: Participante) => {
+    try {
+      await addDoc(collection(db, "participantes"), participante);
+      setJaFezCadastro(true);
+    } catch (error) {
+      console.error("Erro ao adicionar participante:", error);
+    }
   };
 
   const isNumeroDisponivel = (numero: number) => {
@@ -73,10 +67,8 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
   const getParticipantePorNumero = (numero: number) => {
     return participantes.find(p => p.numero === numero);
   };
-  
+
   const limparSelecao = () => {
-    // Função que limpa o estado de cadastro (para desenvolvimento/teste)
-    localStorage.removeItem('jaFezCadastro');
     setJaFezCadastro(false);
   };
 
