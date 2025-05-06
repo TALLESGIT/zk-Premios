@@ -37,12 +37,14 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
       const participantesData: Participante[] = [];
       const numerosData: number[] = [];
       let telefoneUsuarioAtual = ''; // variável para armazenar telefone do usuário atual
+      let nomeUsuarioAtual = ''; // variável para armazenar nome do usuário atual
 
-      // Tentar obter telefone do usuário atual do localStorage ou outro meio
+      // Tentar obter telefone e nome do usuário atual do localStorage ou outro meio
       try {
         telefoneUsuarioAtual = localStorage.getItem('telefoneUsuarioAtual') || '';
+        nomeUsuarioAtual = localStorage.getItem('nomeUsuarioAtual') || '';
       } catch (error) {
-        console.warn('Não foi possível acessar localStorage para telefone do usuário atual');
+        console.warn('Não foi possível acessar localStorage para telefone ou nome do usuário atual');
       }
 
       let jaFezCadastroLocal = false;
@@ -52,7 +54,7 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
         participantesData.push(data);
         numerosData.push(data.numero);
 
-        if (data.telefone === telefoneUsuarioAtual) {
+        if (data.telefone === telefoneUsuarioAtual && data.nome === nomeUsuarioAtual) {
           jaFezCadastroLocal = true;
         }
       }
