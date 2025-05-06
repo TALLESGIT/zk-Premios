@@ -75,6 +75,13 @@ const FormularioCadastro = ({ numeroSelecionado }: { numeroSelecionado: number |
       numero: numeroSelecionado
     });
 
+    // Salvar telefone no localStorage para persistência
+    try {
+      localStorage.setItem('telefoneUsuarioAtual', telefone);
+    } catch (error) {
+      console.warn('Não foi possível salvar telefone no localStorage');
+    }
+
     setNome('');
     setTelefone('');
 

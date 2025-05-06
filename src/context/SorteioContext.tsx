@@ -1,6 +1,6 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { collection, onSnapshot, addDoc, query } from "firebase/firestore";
+import { collection, onSnapshot, addDoc, query, getDocs } from "firebase/firestore";
 import { db } from '../lib/firebase';
 
 type Participante = {
@@ -36,13 +36,29 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const participantesData: Participante[] = [];
       const numerosData: number[] = [];
+      let telefoneUsuarioAtual = ''; // variável para armazenar telefone do usuário atual
+
+      // Tentar obter telefone do usuário atual do localStorage ou outro meio
+      try {
+        telefoneUsuarioAtual = localStorage.getItem('telefoneUsuarioAtual') || '';
+      } catch (error) {
+        console.warn('Não foi possível acessar localStorage para telefone do usuário atual');
+      }
+
+      let jaFezCadastroLocal = false;
+
       for (const doc of querySnapshot.docs) {
         const data = doc.data() as Participante;
         participantesData.push(data);
         numerosData.push(data.numero);
+
+        if (data.telefone === telefoneUsuarioAtual) {
+          jaFezCadastroLocal = true;
+        }
       }
       setParticipantes(participantesData);
       setNumerosEscolhidos(numerosData);
+      setJaFezCadastro(jaFezCadastroLocal);
     });
 
     return () => unsubscribe();
@@ -53,10 +69,21 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
 
   const addParticipante = async (participante: Participante) => {
     try {
+      // Verifica se o participante já fez cadastro pelo telefone
+      const q = query(collection(db, "participantes"));
+      const querySnapshot = await getDocs(q);
+      const jaCadastrado = querySnapshot.docs.some(doc => {
+        const data = doc.data() as Participante;
+        return data.telefone === participante.telefone;
+      });
+      if (jaCadastrado) {
+        throw new Error("Participante já cadastrado com esse telefone.");
+      }
       await addDoc(collection(db, "participantes"), participante);
       setJaFezCadastro(true);
     } catch (error) {
       console.error("Erro ao adicionar participante:", error);
+      throw error;
     }
   };
 
