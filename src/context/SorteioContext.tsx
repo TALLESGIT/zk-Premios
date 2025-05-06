@@ -16,6 +16,8 @@ interface SorteioContextType {
   getParticipantePorNumero: (numero: number) => Participante | undefined;
   limparSelecao: () => void;
   jaFezCadastro: boolean;
+  setParticipantes: React.Dispatch<React.SetStateAction<Participante[]>>;
+  setNumerosEscolhidos: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const MAX_NUMERO = 1000;
@@ -87,7 +89,9 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
       isNumeroDisponivel,
       getParticipantePorNumero,
       limparSelecao,
-      jaFezCadastro
+      jaFezCadastro,
+      setParticipantes,
+      setNumerosEscolhidos
     }}>
       {children}
     </SorteioContext.Provider>
