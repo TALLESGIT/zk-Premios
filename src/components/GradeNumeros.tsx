@@ -20,6 +20,9 @@ const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
   const numerosPorPagina = 100;
   const totalPaginas = 10;
 
+  // Estado para armazenar o número selecionado temporariamente (clicado)
+  const [numeroSelecionadoTemp, setNumeroSelecionadoTemp] = useState<number | null>(null);
+
   // Gera números de 1 a 1000
   const todosNumeros = Array.from({ length: 1000 }, (_, i) => i + 1);
   
@@ -46,6 +49,7 @@ const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
       return;
     }
     
+    setNumeroSelecionadoTemp(numero);
     onNumeroSelecionado(numero);
   };
 
@@ -116,9 +120,13 @@ const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
               disabled={isNumeroEscolhido(numero)}
               className={`
                 rounded-md h-12 w-full p-0 font-bold text-lg transition-all transform hover:scale-105
-                ${isNumeroEscolhido(numero)
-                  ? 'number-selected animate-pulse-light'
-                  : 'number-available hover:shadow-md'}
+                ${
+                  isNumeroEscolhido(numero)
+                    ? 'number-selected bg-brasil-blue text-white animate-pulse-light'
+                    : numeroSelecionadoTemp === numero
+                    ? 'number-selected bg-brasil-blue text-white'
+                    : 'number-available hover:shadow-md'
+                }
                 ${jaFezCadastro ? 'cursor-not-allowed opacity-70' : ''}
               `}
               variant="outline"
