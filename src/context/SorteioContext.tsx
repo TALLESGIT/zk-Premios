@@ -1,6 +1,5 @@
-
+import { addDoc, collection, getDocs, onSnapshot, query } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from 'react';
-import { collection, onSnapshot, addDoc, query, getDocs } from "firebase/firestore";
 import { db } from '../lib/firebase';
 
 type Participante = {
@@ -20,6 +19,10 @@ interface SorteioContextType {
   jaFezCadastro: boolean;
   setParticipantes: React.Dispatch<React.SetStateAction<Participante[]>>;
   setNumerosEscolhidos: React.Dispatch<React.SetStateAction<number[]>>;
+  bloqueado: boolean;
+  setBloqueado: React.Dispatch<React.SetStateAction<boolean>>;
+  usuarioLogado: Participante | null;
+  setUsuarioLogado: React.Dispatch<React.SetStateAction<Participante | null>>;
 }
 
 const MAX_NUMERO = 1000;
@@ -30,6 +33,8 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
   const [participantes, setParticipantes] = useState<Participante[]>([]);
   const [numerosEscolhidos, setNumerosEscolhidos] = useState<number[]>([]);
   const [jaFezCadastro, setJaFezCadastro] = useState<boolean>(false);
+  const [bloqueado, setBloqueado] = useState<boolean>(false);
+  const [usuarioLogado, setUsuarioLogado] = useState<Participante | null>(null);
 
   useEffect(() => {
     const q = query(collection(db, "participantes"));
@@ -56,6 +61,7 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
 
         if (data.telefone === telefoneUsuarioAtual && data.nome === nomeUsuarioAtual) {
           jaFezCadastroLocal = true;
+          setUsuarioLogado(data);
         }
       }
       setParticipantes(participantesData);
@@ -112,7 +118,11 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
       limparSelecao,
       jaFezCadastro,
       setParticipantes,
-      setNumerosEscolhidos
+      setNumerosEscolhidos,
+      bloqueado,
+      setBloqueado,
+      usuarioLogado,
+      setUsuarioLogado
     }}>
       {children}
     </SorteioContext.Provider>
