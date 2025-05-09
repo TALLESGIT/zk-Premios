@@ -10,10 +10,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 interface GradeNumerosProps {
   onNumeroSelecionado: (numero: number) => void;
+  bloqueado: boolean;
 }
 
-const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
-  const { numerosEscolhidos, jaFezCadastro, bloqueado } = useSorteio();
+const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado, bloqueado }) => {
+  const { numerosEscolhidos, jaFezCadastro } = useSorteio();
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [filtro, setFiltro] = useState('');
   const { toast } = useToast();
@@ -122,25 +123,24 @@ const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
       <Card className="p-4 border-brasil-blue/20">
         <div className="number-grid">
           {numerosExibidos.map(numero => (
-            <Button
-              key={numero}
-              onClick={() => handleNumeroCLick(numero)}
-              disabled={isNumeroEscolhido(numero)}
-              className={`
-                rounded-md h-12 w-full p-0 font-bold text-lg transition-all transform hover:scale-105
-                ${
-                  isNumeroEscolhido(numero)
-                    ? 'number-selected bg-brasil-blue text-white animate-pulse-light'
-                    : numeroSelecionadoTemp === numero
-                    ? 'number-selected bg-brasil-blue text-white'
-                    : 'number-available hover:shadow-md'
-                }
-                ${jaFezCadastro ? 'cursor-not-allowed opacity-70' : ''}
-              `}
-              variant="outline"
-            >
-              {numero}
-            </Button>
+              <Button
+                key={numero}
+                onClick={() => handleNumeroCLick(numero)}
+                disabled={isNumeroEscolhido(numero) || bloqueado}
+                className={`
+                  rounded-md h-12 w-full p-0 font-bold text-lg transition-all transform hover:scale-105
+                  ${
+                    isNumeroEscolhido(numero) || bloqueado
+                      ? 'number-selected bg-brasil-blue text-white animate-pulse-light cursor-not-allowed opacity-70'
+                      : numeroSelecionadoTemp === numero
+                      ? 'number-selected bg-brasil-blue text-white'
+                      : 'number-available hover:shadow-md'
+                  }
+                `}
+                variant="outline"
+              >
+                {numero}
+              </Button>
           ))}
         </div>
       </Card>

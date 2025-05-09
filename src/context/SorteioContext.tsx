@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, onSnapshot, query } from "firebase/firestore";
+import { addDoc, collection, getDocs, onSnapshot, query, doc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from 'react';
 import { db } from '../lib/firebase';
 
@@ -35,6 +35,29 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
   const [jaFezCadastro, setJaFezCadastro] = useState<boolean>(false);
   const [bloqueado, setBloqueado] = useState<boolean>(false);
   const [usuarioLogado, setUsuarioLogado] = useState<Participante | null>(null);
+
+  useEffect(() => {
+    const bloqueioDocRef = doc(db, "config", "bloqueio");
+    const unsubscribe = onSnapshot(bloqueioDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        if (data && typeof data.bloqueado === "boolean") {
+          setBloqueado(data.bloqueado);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const updateBloqueado = async (novoEstado: boolean) => {
+    const docRef = doc(db, "config", "bloqueio");
+    try {
+      await setDoc(docRef, { bloqueado: novoEstado });
+      setBloqueado(novoEstado);
+    } catch (error) {
+      console.error("Erro ao atualizar bloqueio:", error);
+    }
+  };
 
   useEffect(() => {
     const q = query(collection(db, "participantes"));
@@ -120,7 +143,7 @@ export function SorteioProvider({ children }: { children: React.ReactNode }) {
       setParticipantes,
       setNumerosEscolhidos,
       bloqueado,
-      setBloqueado,
+      setBloqueado: updateBloqueado,
       usuarioLogado,
       setUsuarioLogado
     }}>

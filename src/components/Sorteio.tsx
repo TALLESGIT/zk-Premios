@@ -153,15 +153,19 @@ const Sorteio = () => {
                   >
                     {bloqueado ? "Desbloquear Seleção" : "Bloquear Seleção"}
                   </button>
-                  {bloqueado && (
-                    <p className="text-red-600 font-semibold mt-2">
-                      A seleção de números está bloqueada pelo administrador.
-                    </p>
-                  )}
                 </>
               )}
-              {!podeSortear && bloqueado && (
-                <p className="text-red-600 font-semibold mt-2">
+              {bloqueado && (
+                <>
+                </>
+              )}
+              {!bloqueado && !usuarioLogado && (
+                <p className="text-gray-600 font-semibold mt-2 text-center">
+                  Faça login para escolher um número.
+                </p>
+              )}
+              {bloqueado && usuarioLogado?.nome !== "Itallo Antônio Ferreira" && (
+                <p className="text-red-600 font-semibold mt-2 text-center">
                   A seleção de números está bloqueada pelo administrador.
                 </p>
               )}
@@ -220,7 +224,7 @@ const Sorteio = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-4">
-                  <GradeNumeros onNumeroSelecionado={handleNumeroSelecionado} />
+                  <GradeNumeros onNumeroSelecionado={handleNumeroSelecionado} bloqueado={bloqueado} />
                 </CardContent>
               </Card>
             </TabsContent>
