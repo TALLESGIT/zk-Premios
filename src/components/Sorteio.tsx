@@ -144,7 +144,10 @@ const Sorteio = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setBloqueado(!bloqueado)}
+                    onClick={() => {
+                      setBloqueado(!bloqueado);
+                      console.log("Bloqueado:", !bloqueado);
+                    }}
                     className="ml-4 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-semibold rounded-lg shadow-lg hover:from-red-800 hover:to-red-600 transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-50"
                     aria-label={bloqueado ? "Desbloquear Seleção" : "Bloquear Seleção"}
                   >
@@ -308,8 +311,8 @@ const Sorteio = () => {
               alt="Banner campanha"
               className="w-full h-full object-cover rounded-lg"
             />
-            <div className="absolute inset-0 flex items-center justify-center text-brasil-yellow font-semibold text-sm bg-black bg-opacity-20 rounded-lg px-4 select-none pointer-events-none">
-              Clique aqui
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-brasil-blue via-blue-400 to-blue-600 text-white font-bold text-base rounded-lg px-4 select-none pointer-events-none text-center shadow-lg animate-pulse">
+              Clique aqui, Concorra a 10 mil reais!
             </div>
           </a>
         </div>

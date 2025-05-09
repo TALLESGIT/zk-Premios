@@ -13,7 +13,7 @@ interface GradeNumerosProps {
 }
 
 const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
-  const { numerosEscolhidos, jaFezCadastro } = useSorteio();
+  const { numerosEscolhidos, jaFezCadastro, bloqueado } = useSorteio();
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [filtro, setFiltro] = useState('');
   const { toast } = useToast();
@@ -40,6 +40,14 @@ const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
     : numerosFiltrados;
 
   const handleNumeroCLick = (numero: number) => {
+    if (bloqueado) {
+      toast({
+        title: "Seleção bloqueada",
+        description: "A seleção de números está bloqueada pelo administrador.",
+        variant: "destructive"
+      });
+      return;
+    }
     if (jaFezCadastro) {
       toast({
         title: "Cadastro já realizado",
@@ -167,6 +175,14 @@ const GradeNumeros: React.FC<GradeNumerosProps> = ({ onNumeroSelecionado }) => {
               {`${(pagina - 1) * 100 + 1}-${pagina * 100}`}
             </Button>
           ))}
+        </div>
+      )}
+      {bloqueado && (
+        <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+          <AlertCircle size={20} className="text-red-600" />
+          <p className="text-red-800">
+            A seleção de números está bloqueada pelo administrador.
+          </p>
         </div>
       )}
     </div>
