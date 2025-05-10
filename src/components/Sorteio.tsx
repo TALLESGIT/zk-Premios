@@ -6,6 +6,7 @@ import FormularioCadastro from "./FormularioCadastro";
 import GradeNumeros from "./GradeNumeros";
 import "../components/ui/animations.css";
 import Fireworks from "./Fireworks";
+import ListaParticipantes from "./ListaParticipantes";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Progress } from "./ui/progress";
@@ -16,6 +17,7 @@ const Sorteio = () => {
   const [numeroSelecionado, setNumeroSelecionado] = useState<number | null>(null);
   const [ganhador, setGanhador] = useState<null | { numero: number; nome: string; telefone: string }>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [mostrarLista, setMostrarLista] = useState(false);
 
   const { numerosEscolhidos, participantes, jaFezCadastro, bloqueado, setBloqueado, usuarioLogado } = useSorteio();
   const formRef = useRef<HTMLDivElement>(null);
@@ -106,7 +108,7 @@ const Sorteio = () => {
   const podeSortear = usuarioEspecialCadastrado;
 
   return (
-    <div className="container py-8">
+    <><div className="container py-8">
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-brasil-blue to-brasil-yellow bg-clip-text text-transparent mb-3">
           ZK Premios
@@ -147,7 +149,7 @@ const Sorteio = () => {
                     onClick={() => {
                       setBloqueado(!bloqueado);
                       console.log("Bloqueado:", !bloqueado);
-                    }}
+                    } }
                     className="ml-4 px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-semibold rounded-lg shadow-lg hover:from-red-800 hover:to-red-600 transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-50"
                     aria-label={bloqueado ? "Desbloquear Seleção" : "Bloquear Seleção"}
                   >
@@ -156,6 +158,7 @@ const Sorteio = () => {
                 </>
               )}
               {bloqueado && (
+                // biome-ignore lint/complexity/noUselessFragments: <explanation>
                 <>
                 </>
               )}
@@ -219,8 +222,8 @@ const Sorteio = () => {
                     {jaFezCadastro
                       ? "Você já escolheu um número para este sorteio"
                       : numeroSelecionado
-                      ? `Você selecionou o número ${numeroSelecionado}`
-                      : "Clique em um número disponível abaixo"}
+                        ? `Você selecionou o número ${numeroSelecionado}`
+                        : "Clique em um número disponível abaixo"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-4">
@@ -252,17 +255,17 @@ const Sorteio = () => {
                             .slice(-10)
                             .reverse()
                             .map((p) => (
-                                <tr
-                                  key={p.numero}
-                                  className="border-b hover:bg-muted/50 transition-colors"
-                                >
-                                  <td className="p-2">
-                                    <Badge className="bg-brasil-blue">{p.numero}</Badge>
-                                  </td>
-                                  <td className="p-2 font-medium">{p.nome}</td>
-                                  <td className="p-2">{maskLastFourDigits(p.telefone)}</td>
-                                </tr>
-                              ))}
+                              <tr
+                                key={p.numero}
+                                className="border-b hover:bg-muted/50 transition-colors"
+                              >
+                                <td className="p-2">
+                                  <Badge className="bg-brasil-blue">{p.numero}</Badge>
+                                </td>
+                                <td className="p-2 font-medium">{p.nome}</td>
+                                <td className="p-2">{maskLastFourDigits(p.telefone)}</td>
+                              </tr>
+                            ))}
 
                         </tbody>
                       </table>
@@ -313,8 +316,7 @@ const Sorteio = () => {
             <img
               src="/WhatsApp Image 2025-04-29 at 12.49.29.ico"
               alt="Banner campanha"
-              className="w-full h-full object-cover rounded-lg"
-            />
+              className="w-full h-full object-cover rounded-lg" />
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-brasil-blue via-blue-400 to-blue-600 text-white font-bold text-base rounded-lg px-4 select-none pointer-events-none text-center shadow-lg animate-pulse">
               Clique aqui, Concorra a 10 mil reais!
             </div>
@@ -322,7 +324,24 @@ const Sorteio = () => {
         </div>
       </div>
     </div>
+    {usuarioLogado?.nome === "Itallo Antônio Ferreira" && usuarioLogado?.telefone.replace(/\D/g, "") === "31983886065" && (
+      <>
+        <h2 className="text-2xl font-bold mb-4 text-center">Lista Completa de Participantes</h2>
+        <div className="flex justify-center mb-4">
+          <button
+            type="button"
+            className="px-6 py-3 bg-gradient-to-r from-brasil-blue to-brasil-yellow text-black font-semibold rounded-lg shadow-lg hover:from-brasil-yellow hover:to-brasil-blue hover:text-white transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-brasil-yellow focus:ring-opacity-50"
+            onClick={() => setMostrarLista(!mostrarLista)}
+          >
+            {mostrarLista ? "Ocultar Participantes" : "Mostrar Participantes"}
+          </button>
+        </div>
+        {mostrarLista && <ListaParticipantes />}
+      </>
+    )}
+  </>
   );
 };
+
 
 export default Sorteio;
