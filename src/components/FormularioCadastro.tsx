@@ -62,10 +62,13 @@ const FormularioCadastro = ({ numeroSelecionado }: { numeroSelecionado: number |
       return;
     }
 
-    if (!nome || !telefone || telefone.replace(/\D/g, "").length < 10) {
+    const telefoneNumeros = telefone.replace(/\D/g, "");
+    const telefoneValido = telefoneNumeros.length === 11 && telefoneNumeros[2] === "9";
+
+    if (!nome || !telefone || !telefoneValido) {
       toast({
-        title: "Dados incompletos",
-        description: "Preencha seu nome completo e telefone corretamente.",
+        title: "Telefone inválido",
+        description: "Por favor, insira um número de WhatsApp válido com 11 dígitos, começando com 9 após o DDD.",
         variant: "destructive",
       });
       return;
