@@ -271,56 +271,56 @@ const Sorteio = () => {
                       </div>
                     ) : (
                       <div className="text-center py-10 text-muted-foreground">
-                        <p className="text-xl">Nenhuma reserva realizada ainda.</p>
-                        <p className="mt-2">Seja o primeiro a escolher seu número da sorte!</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
+                <p className="text-xl">Nenhuma reserva realizada ainda.</p>
+                <p className="mt-2">Seja o primeiro a escolher seu número da sorte!</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
+  </div>
 
-          <div className="space-y-6" ref={formRef}>
-            <FormularioCadastro numeroSelecionado={numeroSelecionado} />
-            <Card className="border-brasil-blue/20 shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-brasil-blue/10 to-white pb-2 rounded-t-lg">
-                <CardTitle className="text-xl text-brasil-blue">Legenda</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <div className="flex items-center mb-3 p-2 rounded-md hover:bg-gray-50 transition-colors">
-                  <div className="w-10 h-10 rounded-md number-available mr-3 flex items-center justify-center">
-                    {1000 - numerosEscolhidos.length}
-                  </div>
-                  <span className="text-gray-600">Número disponível</span>
-                </div>
-                <Separator className="my-2" />
-                <div className="flex items-center p-2 rounded-md hover:bg-gray-50 transition-colors">
-                  <div className="w-10 h-10 rounded-md number-selected mr-3 flex items-center justify-center">
-                    {numerosEscolhidos.length}
-                  </div>
-                  <span className="text-gray-600">Número já reservado</span>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Banner abaixo da legenda */}
-            <div className="mt-4 flex justify-center max-w-md mx-auto relative" style={{ height: '285px' }}>
-              <a href="https://zksorteios.com.br/campanha/r-usd-10-000-00-reias-no-pix-2" target="_blank" rel="noopener noreferrer" className="w-full block relative h-full">
-                <img
-                  src="/WhatsApp Image 2025-05-12 at 19.20.10.ico"
-                  alt="Banner WhatsApp"
-                  className="w-full h-full rounded-lg shadow-md object-cover"
-                />
-                <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg md:text-xl bg-black bg-opacity-40 rounded-lg animate-pulse cursor-pointer select-none">
-                  Clique aqui, e concorra a 10 mil Reais!
-                </span>
-              </a>
-            </div>
+  <div className="space-y-6" ref={formRef}>
+    <FormularioCadastro numeroSelecionado={numeroSelecionado} />
+    <Card className="border-brasil-blue/20 shadow-lg">
+      <CardHeader className="bg-gradient-to-r from-brasil-blue/10 to-white pb-2 rounded-t-lg">
+        <CardTitle className="text-xl text-brasil-blue">Legenda</CardTitle>
+      </CardHeader>
+      <CardContent className="pt-4">
+        <div className="flex items-center mb-3 p-2 rounded-md hover:bg-gray-50 transition-colors">
+          <div className="w-10 h-10 rounded-md number-available mr-3 flex items-center justify-center">
+            {1000 - numerosEscolhidos.length}
           </div>
+          <span className="text-gray-600">Número disponível</span>
         </div>
-      </div>
-      <WhatsAppButton />
-    </>
+        <Separator className="my-2" />
+        <div className="flex items-center p-2 rounded-md hover:bg-gray-50 transition-colors">
+          <div className="w-10 h-10 rounded-md number-selected mr-3 flex items-center justify-center">
+            {numerosEscolhidos.length}
+          </div>
+          <span className="text-gray-600">Número já reservado</span>
+        </div>
+      </CardContent>
+    </Card>
+    {/* Banner abaixo da legenda */}
+    <div className="mt-4 flex justify-center max-w-md mx-auto relative" style={{ height: '285px' }}>
+      <a href="https://zksorteios.com.br/campanha/r-usd-10-000-00-reias-no-pix-2" target="_blank" rel="noopener noreferrer" className="w-full block relative h-full">
+        <img
+          src="/WhatsApp Image 2025-05-12 at 19.20.10.ico"
+          alt="Banner WhatsApp"
+          className="w-full h-full rounded-lg shadow-md object-cover"
+        />
+        <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg md:text-xl bg-black bg-opacity-40 rounded-lg animate-pulse cursor-pointer select-none">
+          Clique aqui, e concorra a 10 mil Reais!
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+</div>
+<WhatsAppButton />
+</>
   );
 };
 
